@@ -53,7 +53,7 @@ def create_accident(
     acc = Accident(**data.dict())
     db.add(acc)
     db.commit()
-    db.refresh(acc)
+    db.refresh(acc) #todo
     return acc
 
 # ----------- DELETE – admin only -----------
