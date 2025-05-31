@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+psycopg2-binary
+alembic
+requests
+tqdm
+passlib[bcrypt]
+pydantic
+python-dotenv
+pyyaml
+xmltodict
+python-jose[cryptography]
+python-multipart

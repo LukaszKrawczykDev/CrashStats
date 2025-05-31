@@ -1,0 +1,47 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:15
+    container_name: crashstats_db
+    restart: always
+    environment:
+      POSTGRES_USER: crashuser
+      POSTGRES_PASSWORD: crashpass
+      POSTGRES_DB: crashstats
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./backend/db_init:/docker-entrypoint-initdb.d
+
+  backend:
+    build: ./backend
+    container_name: crashstats_backend
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://crashuser:crashpass@db:5432/crashstats
+    volumes:
+      - ./backend/data:/app/app/data
+      - ./backend/app/scripts/progress:/app/app/scripts/progress
+      - ./backend/alembic:/app/alembic
+      - ./backend/alembic.ini:/app/alembic.ini
+    ports:
+      - "8000:8000"
+    command: sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
+    env_file:
+      - ./backend/.env
+
+  frontend:
+    build: ./frontend
+    container_name: crashstats_frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+
+volumes:
+  pgdata:
