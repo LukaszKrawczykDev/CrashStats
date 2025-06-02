@@ -12,3 +12,6 @@ pyyaml
 xmltodict
 python-jose[cryptography]
 python-multipart
+spyne
+lxml
+pydantic[email]
