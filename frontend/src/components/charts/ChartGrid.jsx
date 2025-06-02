@@ -7,20 +7,17 @@ import AccidentsByMonth from "./AccidentsByMonth";
 import DeathsTrend from "./DeathsTrend";
 import LocationMap from "./LocationMap";
 import WeatherChart from "./WeatherChart";
-import SeverityAvgChart from "./SeverityAvgChart";
 import TimeOfDayChart from "./TimeOfDayChart";
 import UserTypeChart from "./UserTypeChart";
-import RoadTypeChart from "./VehicleTypeChart.jsx"; // ok
 
 const chartComponents = [
     { title: "Wypadki miesięcznie", Component: AccidentsByMonth },
-    { title: "Trend zgonów", Component: DeathsTrend },
+    { title: "Trend śmiertelnych wypadków", Component: DeathsTrend },
     { title: "Mapa lokalizacji", Component: LocationMap },
     { title: "Pogoda a wypadki", Component: WeatherChart },
-    { title: "Średnia ciężkość obrażeń", Component: SeverityAvgChart },
     { title: "Pora dnia", Component: TimeOfDayChart },
-    { title: "Typ uczestnika", Component: UserTypeChart },
-    { title: "Rodzaj drogi", Component: RoadTypeChart },
+    //{ title: "Typ uczestnika", Component: UserTypeChart },
+
 ];
 
 // 💡 PRZYJMIJ filters jako props!
@@ -41,7 +38,7 @@ export default function ChartGrid({ filters }) {
                     isOpen={!!modalChart}
                     onClose={() => setModalChart(null)}
                 >
-                    <modalChart.Component filters={filters} />
+                    <modalChart.Component filters={filters} expanded={true} />
                 </ChartModal>
             )}
         </div>

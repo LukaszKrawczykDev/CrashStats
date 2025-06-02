@@ -1,12 +1,47 @@
 // src/components/FilterBar.jsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-const seasons = ["Wiosna", "Lato", "Jesień", "Zima"];
-const availableYears = [2021, 2022, 2023, 2024];
+const seasonMap = {
+    Wiosna: [3, 4, 5],
+    Lato: [6, 7, 8],
+    Jesień: [9, 10, 11],
+    Zima: [12, 1, 2],
+};
+
+const getSeasonsForMonths = (months) => {
+    const seasons = new Set();
+    months.forEach((m) => {
+        for (const [season, values] of Object.entries(seasonMap)) {
+            if (values.includes(m)) {
+                seasons.add(season);
+            }
+        }
+    });
+    return Array.from(seasons);
+};
 
 export default function FilterBar({ filters, onChange }) {
     const [open, setOpen] = useState(false);
-    const [localFilters, setLocalFilters] = useState(filters);
+    const [availableYears, setAvailableYears] = useState({});
+    const [localFilters, setLocalFilters] = useState({ years: {} });
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetch("/api/stats/filters/meta")
+            .then((res) => res.json())
+            .then((data) => {
+                setAvailableYears(data);
+
+                const initial = {};
+                for (const [year, months] of Object.entries(data)) {
+                    initial[year] = getSeasonsForMonths((months || []).map(Number))
+                }
+
+                setLocalFilters({ years: initial });
+                onChange({ years: initial });
+                setLoading(false);
+            });
+    }, []);
 
     const toggleYear = (year) => {
         setLocalFilters((prev) => {
@@ -14,7 +49,8 @@ export default function FilterBar({ filters, onChange }) {
             if (updated[year]) {
                 delete updated[year];
             } else {
-                updated[year] = [...seasons];
+                const months = availableYears[year].map(Number);
+                updated[year] = getSeasonsForMonths(months);
             }
             return { years: updated };
         });
@@ -23,11 +59,11 @@ export default function FilterBar({ filters, onChange }) {
     const toggleSeason = (year, season) => {
         setLocalFilters((prev) => {
             const updated = { ...prev.years };
-            const existing = updated[year] || [];
-            if (existing.includes(season)) {
-                updated[year] = existing.filter((s) => s !== season);
+            const selected = updated[year] || [];
+            if (selected.includes(season)) {
+                updated[year] = selected.filter((s) => s !== season);
             } else {
-                updated[year] = [...existing, season];
+                updated[year] = [...selected, season];
             }
             return { years: updated };
         });
@@ -40,9 +76,11 @@ export default function FilterBar({ filters, onChange }) {
 
     const clearFilters = () => {
         const reset = {};
-        availableYears.forEach((year) => (reset[year] = [...seasons]));
-        onChange({ years: reset });
+        for (const [year, months] of Object.entries(availableYears)) {
+            reset[year] = getSeasonsForMonths(months.map(Number));
+        }
         setLocalFilters({ years: reset });
+        onChange({ years: reset });
         setOpen(false);
     };
 
@@ -50,14 +88,14 @@ export default function FilterBar({ filters, onChange }) {
         <div className="sticky top-16 z-40 bg-white shadow px-4 py-2 mb-4">
             <button
                 className="bg-blue-500 text-white px-4 py-2 rounded shadow"
-                onClick={() => setOpen((prev) => !prev)}
+                onClick={() => setOpen(!open)}
             >
                 Filtry
             </button>
 
-            {open && (
+            {open && !loading && (
                 <div className="bg-gray-100 mt-4 p-4 rounded shadow">
-                    {availableYears.map((year) => (
+                    {Object.entries(availableYears).map(([year, months]) => (
                         <div key={year} className="mb-2">
                             <label className="font-semibold">
                                 <input
@@ -70,7 +108,7 @@ export default function FilterBar({ filters, onChange }) {
                             </label>
                             {localFilters.years[year] && (
                                 <div className="ml-6 mt-1 flex flex-wrap gap-2">
-                                    {seasons.map((season) => (
+                                    {getSeasonsForMonths(months.map(Number)).map((season) => (
                                         <label key={season} className="text-sm">
                                             <input
                                                 type="checkbox"
