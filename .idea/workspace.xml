@@ -4,8 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="94b696b9-a4b5-401b-a0a0-de44adbc2d2f" name="Changes" comment="Frontend - początek">
-      <change beforePath="$PROJECT_DIR$/backend/app/routers/stats/AccidentsByMonth.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/routers/stats/AccidentsByMonth.py" afterDir="false" />
+    <list default="true" id="94b696b9-a4b5-401b-a0a0-de44adbc2d2f" name="Changes" comment="Frontend - tailwind update">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,6 +47,7 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Docker.Unnamed.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
@@ -68,6 +69,18 @@
       <recent name="$PROJECT_DIR$/frontend/src/components/auth" />
       <recent name="$PROJECT_DIR$/backend/app" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="Unnamed" type="docker-deploy" factoryName="docker-compose.yml" server-name="Docker">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="envFilePath" value="" />
+          <option name="commandLineOptions" value="--build" />
+          <option name="sourceFilePath" value="docker-compose.yml" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -92,6 +105,10 @@
       <workItem from="1748797128707" duration="1097000" />
       <workItem from="1748798353726" duration="17877000" />
       <workItem from="1748867701557" duration="2841000" />
+      <workItem from="1748888754275" duration="16581000" />
+      <workItem from="1748965028754" duration="249000" />
+      <workItem from="1749038943927" duration="45000" />
+      <workItem from="1749061036395" duration="157000" />
     </task>
     <task id="LOCAL-00001" summary=".">
       <option name="closed" value="true" />
@@ -117,7 +134,23 @@
       <option name="project" value="LOCAL" />
       <updated>1748867824947</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Frontend - wykresiki 4,5/6">
+      <option name="closed" value="true" />
+      <created>1748905043329</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1748905043330</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Frontend - tailwind update">
+      <option name="closed" value="true" />
+      <created>1748905233529</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1748905233530</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -153,6 +186,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="." />
     <MESSAGE value="Frontend - początek" />
-    <option name="LAST_COMMIT_MESSAGE" value="Frontend - początek" />
+    <MESSAGE value="Frontend - wykresiki 4,5/6" />
+    <MESSAGE value="Frontend - tailwind update" />
+    <option name="LAST_COMMIT_MESSAGE" value="Frontend - tailwind update" />
   </component>
 </project>

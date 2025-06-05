@@ -1,72 +1,78 @@
-from fastapi import APIRouter, Request
-from sqlalchemy.orm import Session
-from sqlalchemy import func, case
-from app.database import SessionLocal
-from app.models import Accident, Date
+# app/routers/stats/time_of_day.py
+
+from typing import List, Dict, Any
 from collections import defaultdict
 
-router = APIRouter(prefix="/stats")
+from fastapi import APIRouter
+from pydantic import BaseModel, Field
+from sqlalchemy.orm import Session
 
-@router.post("/time-of-day-chart")
-def time_of_day_chart(request: Request):
+from app.database import SessionLocal
+from app.models import Accident, Date
+
+router = APIRouter(prefix="/stats", tags=["stats"])
+
+# ---------- Request & Response Schemas ----------
+class ChartRequest(BaseModel):
+    collision_types: List[str] = Field(default_factory=list)
+
+class ChartResponse(BaseModel):
+    data: List[Dict[str, Any]]
+    types: List[str]
+
+# ---------- Utilities ----------
+def hour_to_period(hour: int) -> str:
+    if 6 <= hour < 12:
+        return "Rano"
+    elif 12 <= hour < 18:
+        return "Dzień"
+    elif 18 <= hour < 22:
+        return "Wieczór"
+    return "Noc"
+
+PERIODS = ["Noc", "Rano", "Dzień", "Wieczór"]
+
+DEFAULT_TYPES = [
+    "1-Car", "2-Car", "Pedestrian", "Moped/Motorcycle",
+    "Bus", "Cyclist", "3+ Cars"
+]
+
+# ---------- Endpoint ----------
+@router.post("/time-of-day-chart", response_model=ChartResponse)
+def time_of_day_chart(req: ChartRequest):
+    sel_types = req.collision_types or DEFAULT_TYPES
+    print(f"📥 Request received: {sel_types}")
+
     db: Session = SessionLocal()
-    body = request.json() if callable(getattr(request, "json", None)) else {}
-
-    accident_type_filter = set(body.get("collision_types", []))
-
-    # Zakresy czasowe do kategorii pory dnia
-    time_of_day_case = case(
-        (
-            (Date.hour >= 22) | (Date.hour < 6),
-            "Noc"
-        ),
-        (
-            (Date.hour >= 6) & (Date.hour < 12),
-            "Rano"
-        ),
-        (
-            (Date.hour >= 12) & (Date.hour < 18),
-            "Dzień"
-        ),
-        (
-            (Date.hour >= 18) & (Date.hour < 22),
-            "Wieczór"
-        ),
-        else_="Inna"
-    )
-
-    query = (
-        db.query(
-            time_of_day_case.label("time_of_day"),
-            Accident.collision_type,
-            func.count().label("count")
+    try:
+        rows = (
+            db.query(Accident.collision_type, Date.hour)
+            .join(Date, Accident.date_id == Date.id)
+            .filter(Accident.collision_type.in_(sel_types))
+            .all()
         )
-        .join(Date, Accident.date_id == Date.id)
-        .group_by("time_of_day", Accident.collision_type)
-    )
 
-    if accident_type_filter:
-        query = query.filter(Accident.collision_type.in_(accident_type_filter))
+        print(f"📊 Fetched {len(rows)} rows.")
 
-    results = query.all()
+        agg = defaultdict(lambda: defaultdict(int))
+        for collision_type, hour in rows:
+            if hour is None:
+                continue
+            period = hour_to_period(hour)
+            agg[period][collision_type] += 1
 
-    # Konwersja do formatu wykresu
-    grouped_data = defaultdict(lambda: defaultdict(int))
-    for row in results:
-        time_of_day = row.time_of_day
-        collision_type = row.collision_type
-        count = row.count
-        grouped_data[time_of_day][collision_type] = count
+        data = []
+        for period in PERIODS:
+            row = {"time": period}
+            for ct in sel_types:
+                row[ct] = agg[period].get(ct, 0)
+            data.append(row)
 
-    # Zabezpieczone kategorie por dnia w ustalonej kolejności
-    all_times = ["Noc", "Rano", "Dzień", "Wieczór"]
-    all_types = sorted({row.collision_type for row in results})
+        print("✅ Final data:", data)
+        return {"data": data, "types": sel_types}
 
-    data = []
-    for time in all_times:
-        entry = {"time": time}
-        for ctype in all_types:
-            entry[ctype] = grouped_data[time].get(ctype, 0)
-        data.append(entry)
-
-    return {"data": data, "types": all_types}
+    except Exception as e:
+        print("❌ ERROR:", e)
+        raise
+    finally:
+        db.close()

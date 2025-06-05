@@ -8,7 +8,7 @@ import DeathsTrend from "./DeathsTrend";
 import LocationMap from "./LocationMap";
 import WeatherChart from "./WeatherChart";
 import TimeOfDayChart from "./TimeOfDayChart";
-import UserTypeChart from "./UserTypeChart";
+import UserTypeWeatherChart from "./UserTypeWeatherChart.jsx";
 
 const chartComponents = [
     { title: "Wypadki miesięcznie", Component: AccidentsByMonth },
@@ -16,7 +16,7 @@ const chartComponents = [
     { title: "Mapa lokalizacji", Component: LocationMap },
     { title: "Pogoda a wypadki", Component: WeatherChart },
     { title: "Pora dnia", Component: TimeOfDayChart },
-    //{ title: "Typ uczestnika", Component: UserTypeChart },
+    { title: "Typ uczestnika", Component: UserTypeWeatherChart },
 
 ];
 

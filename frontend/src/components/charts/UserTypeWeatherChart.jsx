@@ -1,4 +1,3 @@
-// src/features/charts/TimeOfDayChart.jsx
 import { useEffect, useState } from "react";
 import {
     BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer,
@@ -9,14 +8,14 @@ const COLLISION_TYPES = [
 ];
 const COLORS = ["#60a5fa", "#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#14b8a6"];
 
-export default function TimeOfDayChart() {
+export default function UserTypeWeatherChart() {
     const [data, setData] = useState([]);
     const [types, setTypes] = useState(COLLISION_TYPES);
     const [selectedTypes, setSelectedTypes] = useState(new Set(COLLISION_TYPES));
     const [showFilters, setShowFilters] = useState(false);
 
     useEffect(() => {
-        fetch("/api/stats/time-of-day-chart", {
+        fetch("/api/stats/user-weather-chart", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ collision_types: Array.from(selectedTypes) })
@@ -43,7 +42,9 @@ export default function TimeOfDayChart() {
     return (
         <div className="w-full h-64 md:h-[400px]">
             <div className="flex items-center justify-between mb-2">
-                <h3 className="text-lg font-semibold">Pora dnia a typ wypadku</h3>
+                <h3 className="text-lg font-semibold">
+                    Typ uczestnika vs pogoda i pora dnia
+                </h3>
                 <button
                     className="text-sm underline"
                     onClick={() => setShowFilters((prev) => !prev)}
@@ -69,7 +70,7 @@ export default function TimeOfDayChart() {
 
             <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={data}>
-                    <XAxis dataKey="time" />
+                    <XAxis dataKey="label" />
                     <YAxis allowDecimals={false} />
                     <Tooltip />
                     <Legend />

@@ -3,14 +3,14 @@ from fastapi.middleware.wsgi import WSGIMiddleware
 from app.soap_server import soap_wsgi_app
 from app.routers.auth_router import router as auth_router
 from app.routers.accidents_router import router as accidents_router
-from app.routers.data_router import router as data_router
 from app.routers import test_isolation
-from app.routers.stats import filters, accidents_by_month, deaths_trend, location_map, weather_chart, time_of_day
+from app.routers.stats import filters, accidents_by_month, deaths_trend, location_map, weather_chart, time_of_day, user_weather_chart
+from app.routers import data_export, filters_meta
+
 app = FastAPI()
 
 app.include_router(auth_router)
 app.include_router(accidents_router)
-app.include_router(data_router)
 app.include_router(test_isolation.router)
 app.include_router(filters.router)
 app.include_router(accidents_by_month.router)
@@ -18,7 +18,9 @@ app.include_router(deaths_trend.router)
 app.include_router(location_map.router)
 app.include_router(weather_chart.router)
 app.include_router(time_of_day.router)
-
+app.include_router(user_weather_chart.router)
+app.include_router(data_export.router)
+app.include_router(filters_meta.router)
 app.mount("/soap", WSGIMiddleware(soap_wsgi_app))
 
 # routes...
