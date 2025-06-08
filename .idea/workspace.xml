@@ -4,8 +4,43 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="94b696b9-a4b5-401b-a0a0-de44adbc2d2f" name="Changes" comment="Frontend - tailwind update">
+    <list default="true" id="94b696b9-a4b5-401b-a0a0-de44adbc2d2f" name="Changes" comment="Frontend - export and import json, yaml, xml">
+      <change afterPath="$PROJECT_DIR$/backend/app/routers/export_router.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/app/routers/import_router.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/app/utils/weather.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/pages/ExportPage.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/pages/ImportPage.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/db/session.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/db/session.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/routers/accidents_router.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/routers/auth_router.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/routers/auth_router.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/routers/data_export.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/routers/filters_meta.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/routers/stats/accidents_by_month.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/routers/stats/accidents_by_month.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/routers/stats/filters.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/routers/stats/filters.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/routers/test_isolation.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/schemas/export.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/schemas/export.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/scripts/fetch_weather.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/app/scripts/fetch_weather.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/app/soap_server.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/backend/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/.env" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/public/vite.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/assets/react.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/ColumnSelector.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/DataTable.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/ExportButtons.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/FilterPanel.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Header.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Header.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/charts/AccidentsByMonth.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/charts/AccidentsByMonth.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/charts/TimeOfDayChart.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/charts/TimeOfDayChart.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/charts/UserTypeWeatherChart.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/charts/UserTypeWeatherChart.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/ExportData.jsx" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,11 +98,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/frontend/src/components" />
+      <recent name="$PROJECT_DIR$/soap" />
+      <recent name="$PROJECT_DIR$/frontend/src" />
       <recent name="$PROJECT_DIR$/frontend" />
+      <recent name="$PROJECT_DIR$/frontend/src/components" />
       <recent name="$PROJECT_DIR$/frontend/public" />
-      <recent name="$PROJECT_DIR$/frontend/src/components/auth" />
-      <recent name="$PROJECT_DIR$/backend/app" />
     </key>
   </component>
   <component name="RunManager">
@@ -109,6 +144,17 @@
       <workItem from="1748965028754" duration="249000" />
       <workItem from="1749038943927" duration="45000" />
       <workItem from="1749061036395" duration="157000" />
+      <workItem from="1749069569782" duration="12157000" />
+      <workItem from="1749082750836" duration="403000" />
+      <workItem from="1749131709925" duration="5385000" />
+      <workItem from="1749217306747" duration="2000" />
+      <workItem from="1749217736946" duration="599000" />
+      <workItem from="1749405856582" duration="12294000" />
+      <workItem from="1749418211174" duration="3203000" />
+      <workItem from="1749421603456" duration="4355000" />
+      <workItem from="1749425989898" duration="20000" />
+      <workItem from="1749426054493" duration="46000" />
+      <workItem from="1749426173128" duration="662000" />
     </task>
     <task id="LOCAL-00001" summary=".">
       <option name="closed" value="true" />
@@ -150,7 +196,15 @@
       <option name="project" value="LOCAL" />
       <updated>1748905233530</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Frontend - export json, yaml, xml">
+      <option name="closed" value="true" />
+      <created>1749081721050</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1749081721050</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -188,6 +242,8 @@
     <MESSAGE value="Frontend - początek" />
     <MESSAGE value="Frontend - wykresiki 4,5/6" />
     <MESSAGE value="Frontend - tailwind update" />
-    <option name="LAST_COMMIT_MESSAGE" value="Frontend - tailwind update" />
+    <MESSAGE value="Frontend - export json, yaml, xml" />
+    <MESSAGE value="Frontend - export and import json, yaml, xml" />
+    <option name="LAST_COMMIT_MESSAGE" value="Frontend - export and import json, yaml, xml" />
   </component>
 </project>

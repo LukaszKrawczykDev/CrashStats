@@ -42,9 +42,6 @@ export default function UserTypeWeatherChart() {
     return (
         <div className="w-full h-64 md:h-[400px]">
             <div className="flex items-center justify-between mb-2">
-                <h3 className="text-lg font-semibold">
-                    Typ uczestnika vs pogoda i pora dnia
-                </h3>
                 <button
                     className="text-sm underline"
                     onClick={() => setShowFilters((prev) => !prev)}

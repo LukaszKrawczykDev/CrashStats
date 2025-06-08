@@ -16,19 +16,12 @@ from app.models.weather import Weather
 
 from tqdm import tqdm
 
-# ----------------------------------------------------------------------
-# API CONFIG
-# ----------------------------------------------------------------------
-NOAA_TOKEN = "VZrCSXhUjdNmVRXtRcnUdLOadVADBNJT"
-NOAA_URL = "https://archive-api.open-meteo.com/v1/archive"
+OP_url = "https://archive-api.open-meteo.com/v1/archive"
 PROGRESS_FILE = "weather_progress.json"
 MAX_REQUESTS_PER_DAY = 10000
 DEFAULT_LAT = 39.16144
 DEFAULT_LON = -86.534848
 
-# ----------------------------------------------------------------------
-# Helper functions
-# ----------------------------------------------------------------------
 def build_category(rain: float, snow: float, cloud: float) -> str:
     if snow > 0:
         return "snow"
@@ -71,13 +64,11 @@ def save_progress(date_id):
     with open(PROGRESS_FILE, "w") as f:
         json.dump({"last_date_id": date_id}, f)
 
-# ----------------------------------------------------------------------
-# Weather Fetcher for Coordinates
-# ----------------------------------------------------------------------
+
 def fetch_weather_block(lat: float, lon: float, ts_utc: datetime, tries: int = 4) -> dict:
     date_str = ts_utc.strftime("%Y-%m-%d")
     url = (
-        f"{NOAA_URL}?latitude={lat}&longitude={lon}"
+        f"{OP_url}?latitude={lat}&longitude={lon}"
         f"&start_date={date_str}&end_date={date_str}"
         f"&hourly=temperature_2m,precipitation,cloudcover,snowfall,wind_speed_10m,wind_direction_10m"
         f"&timezone=UTC"
@@ -96,9 +87,6 @@ def fetch_weather_block(lat: float, lon: float, ts_utc: datetime, tries: int = 4
             time.sleep(2 * attempt + random.uniform(0, 1))
     raise RuntimeError(f"Open-Meteo failed after {tries} tries for {lat},{lon} {date_str}")
 
-# ----------------------------------------------------------------------
-# Main
-# ----------------------------------------------------------------------
 def main() -> None:
     db: Session = SessionLocal()
     progress = load_progress()

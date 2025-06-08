@@ -7,27 +7,33 @@ import { useAuth } from "../features/auth/authContext.jsx";
 export default function Header() {
     const [showModal, setShowModal] = useState(false);
     const { token, role, logout } = useAuth();
+    const [showImporter, setShowImporter] = useState(false);
 
     return (
         <>
             <header className="sticky top-0 z-50 bg-gray-800 text-white p-4 flex justify-between items-center shadow">
-                <h1 className="text-xl font-bold">🚗 CrashStats</h1>
-                <div>
-                    {token && (
-                        <>
-                            <Link to="/export" className="bg-blue-500 px-4 py-2 rounded mr-2">
-                                Eksportuj dane
-                            </Link>
-                        </>
-                    )}
+                <Link to="/" className="text-xl font-bold">
+                    🚗 CrashStats
+                </Link>
+                <div className="space-x-2">
                     {!token ? (
                         <button onClick={() => setShowModal(true)} className="bg-blue-600 px-4 py-2 rounded">
                             Zaloguj się
                         </button>
                     ) : (
-                        <button onClick={logout} className="bg-red-500 px-4 py-2 rounded">
-                            Wyloguj
-                        </button>
+                        <>
+                            <Link to="/export" className="bg-green-500 px-4 py-2 rounded">
+                                Eksportuj dane
+                            </Link>
+                            {role === "admin" && (
+                                <Link to="/import" className="bg-yellow-500 px-4 py-2 rounded">
+                                    Importuj dane
+                                </Link>
+                            )}
+                            <button onClick={logout} className="bg-red-500 px-4 py-2 rounded">
+                                Wyloguj
+                            </button>
+                        </>
                     )}
                 </div>
             </header>

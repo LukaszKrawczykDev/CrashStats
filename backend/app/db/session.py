@@ -1,7 +1,7 @@
 from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Connection
-from app.database import DATABASE_URL  # lub z configu, jeśli masz
+from app.database import DATABASE_URL
 
 engine = create_engine(DATABASE_URL)
 

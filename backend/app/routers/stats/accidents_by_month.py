@@ -4,7 +4,7 @@ from sqlalchemy import func, or_, and_
 from app.database import SessionLocal
 from app.models.accident import Accident
 from app.models.date import Date
-from app.models.weather import Weather  # potrzebne do filtrów pogodowych
+from app.models.weather import Weather
 
 router = APIRouter(prefix="/stats", tags=["stats"])
 
@@ -49,7 +49,6 @@ async def accidents_by_month(request: Request):
     results = base_query.all()
     db.close()
 
-    # Normalizacja wyników do struktury { (year, month): {rc: count} }
     data_map = {}
     for year, month, rc, count in results:
         key = (year, month)
@@ -57,7 +56,6 @@ async def accidents_by_month(request: Request):
             data_map[key] = {}
         data_map[key][rc] = count
 
-    # Uzupełnienie zerami brakujących stanów
     all_conds = ["snowy", "icy", "wet", "dry"]
     final = []
     for year, month in sorted(data_map.keys()):

@@ -44,3 +44,8 @@ def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
     if user is None:
         raise cred_exc
     return user
+
+def get_current_admin(user: User = Depends(get_current_user)) -> User:
+    if not getattr(user, "is_admin", False):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not enough privileges")
+    return user

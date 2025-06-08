@@ -9,7 +9,6 @@ import {
     ResponsiveContainer
 } from "recharts";
 
-// Domyślne stany drogi
 const ROAD_CONDITIONS = ["snowy", "icy", "wet", "dry"];
 const COLORS = {
     snowy: "#60a5fa",

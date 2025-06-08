@@ -4,15 +4,11 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import FilterBar from "./components/FilterBar";
 import ChartGrid from "./components/charts/ChartGrid";
-import ExportData from "./pages/ExportData";
+import ExportPage from "./pages/ExportPage.jsx";
+import ImportPage from "./pages/ImportPage.jsx";
 
 export default function App() {
-    const [filters, setFilters] = useState({
-        years: {
-            2014: ["Wiosna", "Lato", "Jesień", "Zima"],
-            2015: ["Wiosna", "Lato", "Jesień", "Zima"],
-        },
-    });
+    const [filters, setFilters] = useState();
 
     return (
         <Router>
@@ -28,8 +24,10 @@ export default function App() {
                             </>
                         }
                     />
-                    <Route path="/export" element={<ExportData />} />
+                    <Route path="/export" element={<ExportPage />} />
+                    <Route path="/import" element={<ImportPage />} />
                 </Routes>
+
             </main>
         </Router>
     );

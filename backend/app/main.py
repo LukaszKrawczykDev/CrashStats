@@ -1,17 +1,12 @@
 from fastapi import FastAPI
-from fastapi.middleware.wsgi import WSGIMiddleware
-from app.soap_server import soap_wsgi_app
 from app.routers.auth_router import router as auth_router
-from app.routers.accidents_router import router as accidents_router
-from app.routers import test_isolation
 from app.routers.stats import filters, accidents_by_month, deaths_trend, location_map, weather_chart, time_of_day, user_weather_chart
-from app.routers import data_export, filters_meta
+from app.routers import export_router
+from app.routers import import_router
 
 app = FastAPI()
 
 app.include_router(auth_router)
-app.include_router(accidents_router)
-app.include_router(test_isolation.router)
 app.include_router(filters.router)
 app.include_router(accidents_by_month.router)
 app.include_router(deaths_trend.router)
@@ -19,17 +14,8 @@ app.include_router(location_map.router)
 app.include_router(weather_chart.router)
 app.include_router(time_of_day.router)
 app.include_router(user_weather_chart.router)
-app.include_router(data_export.router)
-app.include_router(filters_meta.router)
-app.mount("/soap", WSGIMiddleware(soap_wsgi_app))
-
-# routes...
-#if accident_count == 0:
- #   print("🟡 Baza pusta – wgrywam dane")
-    # os.system("python app/scripts/import_csv.py")
-    # os.system("python app/scripts/fetch_weather.py")
-#else:
- #   print("✅ Dane już są – nic nie robię")
+app.include_router(export_router.router)
+app.include_router(import_router.router)
 
 if __name__ == "__main__":
     uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)

@@ -17,3 +17,4 @@ lxml
 pydantic[email]
 dicttoxml==1.7.16
 PyYAML==6.0.1
+zeep

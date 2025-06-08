@@ -36,6 +36,8 @@ def register(payload: RegisterSchema):
     return {"msg": "zarejestrowano"}
 
 # ---------- Logowanie ----------
+# backend/app/routers/auth_router.py
+
 @router.post("/login")
 def login(data: OAuth2PasswordRequestForm = Depends()):
     db: Session = SessionLocal()
@@ -45,11 +47,16 @@ def login(data: OAuth2PasswordRequestForm = Depends()):
     if not user or not verify_pw(data.password, user.password):
         raise HTTPException(status_code=401, detail="Nieprawidłowe dane logowania")
 
+    role = "admin" if user.is_admin else "user"
     token = create_access_token({
         "id": user.id,
-        "role": "admin" if user.is_admin else "user"
+        "role": role
     })
-    return {"access_token": token, "token_type": "bearer"}
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "role": role
+    }
 
 # ---------- Bieżący użytkownik ----------
 @router.get("/me", response_model=UserOut)

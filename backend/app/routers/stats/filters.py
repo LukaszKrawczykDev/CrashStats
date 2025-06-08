@@ -16,5 +16,4 @@ def get_filters_meta():
     for year, month in results:
         years.setdefault(year, set()).add(month)
 
-    # Konwersja setów na listy
     return {str(year): sorted(list(months)) for year, months in years.items()}
