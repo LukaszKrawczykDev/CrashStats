@@ -16,6 +16,9 @@ export default function Header() {
                     🚗 CrashStats
                 </Link>
                 <div className="space-x-2">
+                    <Link to="/soap-stats" className="bg-purple-600 px-4 py-2 rounded ml-2">
+                        Statystyki - SOAP
+                    </Link>
                     {!token ? (
                         <button onClick={() => setShowModal(true)} className="bg-blue-600 px-4 py-2 rounded">
                             Zaloguj się

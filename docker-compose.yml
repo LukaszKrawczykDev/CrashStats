@@ -40,6 +40,14 @@ services:
       - backend
     ports:
       - "3000:80"
+  soap:
+    build: ./soap
+    container_name: crashstats_soap
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8001:8001"
 
 volumes:
   pgdata:

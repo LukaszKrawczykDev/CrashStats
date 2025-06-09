@@ -6,6 +6,7 @@ import FilterBar from "./components/FilterBar";
 import ChartGrid from "./components/charts/ChartGrid";
 import ExportPage from "./pages/ExportPage.jsx";
 import ImportPage from "./pages/ImportPage.jsx";
+import SoapStats from "./pages/SoapStats";
 
 export default function App() {
     const [filters, setFilters] = useState();
@@ -26,6 +27,7 @@ export default function App() {
                     />
                     <Route path="/export" element={<ExportPage />} />
                     <Route path="/import" element={<ImportPage />} />
+                    <Route path="/soap-stats" element={<SoapStats />} />
                 </Routes>
 
             </main>
