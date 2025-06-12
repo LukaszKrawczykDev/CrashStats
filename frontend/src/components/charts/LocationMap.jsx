@@ -143,4 +143,3 @@ export default function LocationMap({ expanded = false }) {
         </div>
     );
 }
-//TODO Zaznaczyć domyślnie checkboxy

@@ -21,13 +21,6 @@ DIMENSION_MAP = {
 
 @router.post("/weather-chart")
 async def weather_chart(request: Request):
-    """
-    Body:
-    {
-        "dimension": "category" | "road_condition",
-        "injury_types": ["Fatal", "OTHER", ...]   # opcjonalnie, brak = wszystko
-    }
-    """
     body = await request.json()
     dimension_key = body.get("dimension", "category")
     dim_column = DIMENSION_MAP.get(dimension_key, Weather.category)
@@ -37,7 +30,6 @@ async def weather_chart(request: Request):
 
     db: Session = SessionLocal()
 
-    # JOIN przez podwójny klucz (date_id + location_id)
     query = (
         db.query(
             dim_column.label("dim"),
@@ -55,7 +47,6 @@ async def weather_chart(request: Request):
     )
 
     if not include_all:
-        # jeśli user wysłał listę, uwzględniamy także "OTHER"
         if "OTHER" in filter_injuries:
             query = query.filter(
                 ~Accident.injury_type.in_(set(INJURY_KEYS) - {"OTHER"})
@@ -66,8 +57,6 @@ async def weather_chart(request: Request):
 
     rows = query.all()
     db.close()
-
-    # -> {dim: {inj: cnt}}
     tmp = {}
     for dim, inj, cnt in rows:
         if dim is None:
@@ -76,7 +65,6 @@ async def weather_chart(request: Request):
         tmp.setdefault(dim, {k: 0 for k in INJURY_KEYS + ["OTHER"]})
         tmp[dim][inj] += cnt
 
-    # ułóż w kolejności malejącej sumy, będzie ładnie na osi X
     ordered = sorted(tmp.items(), key=lambda x: -sum(x[1].values()))
 
     return [

@@ -1,4 +1,3 @@
-// src/components/charts/ChartCard.jsx
 import React from "react";
 
 export default function ChartCard({ title, children, onExpand }) {

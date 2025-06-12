@@ -1,4 +1,3 @@
-// src/components/charts/ChartModal.jsx
 import React from "react";
 
 export default function ChartModal({ isOpen, onClose, title, children }) {

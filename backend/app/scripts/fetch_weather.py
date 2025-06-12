@@ -79,11 +79,11 @@ def fetch_weather_block(lat: float, lon: float, ts_utc: datetime, tries: int = 4
             print(f"🔍 URL: {url}")
             r = requests.get(url, timeout=30)
             if r.status_code == 429:
-                raise RuntimeError("🛑 Przekroczono limit zapytań (429)")
+                raise RuntimeError("Przekroczono limit zapytań (429)")
             r.raise_for_status()
             return r.json()
         except requests.exceptions.RequestException as e:
-            print(f"⚠️  {e.__class__.__name__} attempt {attempt}/{tries} – sleep {2*attempt:.1f}s")
+            print(f"{e.__class__.__name__} attempt {attempt}/{tries} – sleep {2*attempt:.1f}s")
             time.sleep(2 * attempt + random.uniform(0, 1))
     raise RuntimeError(f"Open-Meteo failed after {tries} tries for {lat},{lon} {date_str}")
 
@@ -105,13 +105,13 @@ def main() -> None:
         .all()
     )
 
-    print("⏳ missing weather rows:", len(to_fetch))
+    print("missing weather rows:", len(to_fetch))
 
     request_count = 0
 
     for date, loc in tqdm(to_fetch, desc="Pobieranie pogody", unit="rekord"):
         if request_count >= MAX_REQUESTS_PER_DAY:
-            print("🚦 Limit dzienny 10000 zapytań osiągnięty. Zatrzymuję.")
+            print("Limit dzienny 10000 zapytań osiągnięty. Zatrzymuję.")
             break
 
         lat = loc.latitude if loc.latitude != 0 else DEFAULT_LAT
@@ -123,7 +123,7 @@ def main() -> None:
             data = fetch_weather_block(lat, lon, ts)
             request_count += 1
         except RuntimeError as err:
-            print("❌", err, "– skipping")
+            print("", err, "– skipping")
             break
 
         try:
@@ -136,7 +136,7 @@ def main() -> None:
             wind_speed = round(hourly.get("wind_speed_10m", [0.0]*24)[hour_idx] / 3.6, 2)
             wind_deg = round(hourly.get("wind_direction_10m", [0.0]*24)[hour_idx], 2)
         except (KeyError, IndexError):
-            print(f"⚠️ Brak danych godzinowych dla {ts}, pomijam")
+            print(f"Brak danych godzinowych dla {ts}, pomijam")
             continue
 
         rain24 = round(sum(hourly.get("precipitation", [0.0]*24)), 2)
@@ -161,7 +161,7 @@ def main() -> None:
         db.add(weather)
         db.commit()
         save_progress(date.id)
-        print(f"✓ saved weather for date {date.id} / loc {loc.id}")
+        print(f"saved weather for date {date.id} / loc {loc.id}")
         time.sleep(0.4)
 
 if __name__ == "__main__":

@@ -1,4 +1,3 @@
-# backend/app/routers/export_router.py
 from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.orm import Session, joinedload
 from app.database import get_db
@@ -12,7 +11,6 @@ router = APIRouter(prefix="/export", tags=["export"])
 
 @router.get("/years")
 def get_years(db: Session = Depends(get_db)):
-    # unikalne lata z tabeli dates
     years = db.query(Date.year).distinct().order_by(Date.year).all()
     return {"years": [y[0] for y in years]}
 
@@ -23,25 +21,33 @@ def export_data(
         preview: bool = Query(False, description="Czy tylko podgląd (limit 10)"),
         db: Session = Depends(get_db),
 ):
-    # budujemy zapytanie i fetchujemy relacje date.weathers i location
-    query = (
-        db.query(Accident)
-        .options(
-            joinedload(Accident.date).joinedload(Date.weathers),
-            joinedload(Accident.location)
+    try:
+        db.connection(
+            execution_options={"isolation_level": "REPEATABLE READ"}
         )
-        .join(Accident.date)
-    )
-    if years:
-        query = query.filter(Date.year.in_(years))
-    query = query.order_by(Accident.id)
-    if preview:
-        query = query.limit(10)
-    records = query.all()
+        db.begin_nested()
+        query = (
+            db.query(Accident)
+            .options(
+                joinedload(Accident.date).joinedload(Date.weathers),
+                joinedload(Accident.location)
+            )
+            .join(Accident.date)
+        )
+        if years:
+            query = query.filter(Date.year.in_(years))
+        query = query.order_by(Accident.id)
+        if preview:
+            query = query.limit(10)
+        records = query.all()
+        db.commit()
+
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Błąd eksportu danych: {str(e)}")
 
     export_list = [ExportSchema.from_orm(r).dict() for r in records]
 
-    # serializacja
     if format == "json":
         content = json.dumps(export_list, indent=2, ensure_ascii=False)
         media_type = "application/json"
@@ -53,7 +59,6 @@ def export_data(
         media_type = "application/xml"
 
     headers = {}
-    # jeśli to nie jest podgląd, ustaw nagłówek do pobrania
     if not preview:
         headers["Content-Disposition"] = f'attachment; filename="export.{format}"'
 

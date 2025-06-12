@@ -1,4 +1,3 @@
-// src/components/charts/DeathsTrend.jsx
 import { useEffect, useState } from "react";
 import {
     LineChart,
@@ -98,4 +97,3 @@ export default function DeathsTrend({ filters, isFullscreen = false }) {
         </div>
     );
 }
-//TODO Dodać checkbox

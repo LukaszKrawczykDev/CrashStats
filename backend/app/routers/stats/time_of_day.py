@@ -1,5 +1,3 @@
-# app/routers/stats/time_of_day.py
-
 from typing import List, Dict, Any
 from collections import defaultdict
 
@@ -12,7 +10,6 @@ from app.models import Accident, Date
 
 router = APIRouter(prefix="/stats", tags=["stats"])
 
-# ---------- Request & Response Schemas ----------
 class ChartRequest(BaseModel):
     collision_types: List[str] = Field(default_factory=list)
 
@@ -20,7 +17,6 @@ class ChartResponse(BaseModel):
     data: List[Dict[str, Any]]
     types: List[str]
 
-# ---------- Utilities ----------
 def hour_to_period(hour: int) -> str:
     if 6 <= hour < 12:
         return "Rano"
@@ -37,11 +33,10 @@ DEFAULT_TYPES = [
     "Bus", "Cyclist", "3+ Cars"
 ]
 
-# ---------- Endpoint ----------
 @router.post("/time-of-day-chart", response_model=ChartResponse)
 def time_of_day_chart(req: ChartRequest):
     sel_types = req.collision_types or DEFAULT_TYPES
-    print(f"📥 Request received: {sel_types}")
+    print(f"Request received: {sel_types}")
 
     db: Session = SessionLocal()
     try:
@@ -52,7 +47,7 @@ def time_of_day_chart(req: ChartRequest):
             .all()
         )
 
-        print(f"📊 Fetched {len(rows)} rows.")
+        print(f"Fetched {len(rows)} rows.")
 
         agg = defaultdict(lambda: defaultdict(int))
         for collision_type, hour in rows:
@@ -68,11 +63,11 @@ def time_of_day_chart(req: ChartRequest):
                 row[ct] = agg[period].get(ct, 0)
             data.append(row)
 
-        print("✅ Final data:", data)
+        print("Final data:", data)
         return {"data": data, "types": sel_types}
 
     except Exception as e:
-        print("❌ ERROR:", e)
+        print("ERROR:", e)
         raise
     finally:
         db.close()

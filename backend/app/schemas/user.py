@@ -1,5 +1,3 @@
-# backend/app/schemas/user.py
-
 from pydantic import BaseModel, EmailStr, constr
 
 class RegisterSchema(BaseModel):

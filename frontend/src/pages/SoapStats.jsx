@@ -4,7 +4,6 @@ export default function SoapStats() {
     const [stats, setStats] = useState(null);
     const [error, setError] = useState(null);
 
-    // odczyt URL z .env
     const API_URL = import.meta.env.VITE_API_URLL;
 
     useEffect(() => {

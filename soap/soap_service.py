@@ -6,7 +6,6 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from models.accident import Accident
 
-# Połączenie do tej samej bazy co backend (nazwa hosta „db” z docker-compose)
 DATABASE_URL = "postgresql://crashuser:crashpass@db:5432/crashstats"
 
 engine = create_engine(DATABASE_URL, echo=False)
@@ -21,8 +20,6 @@ class StatsService(ServiceBase):
             total = db.query(Accident).count()
             unique_locs = db.query(Accident.location_id).distinct().count()
             unique_dates = db.query(Accident.date_id).distinct().count()
-
-            # najczęstsze collision_type i primary_factor
             rows = db.query(Accident.collision_type, Accident.primary_factor).all()
             types = {}
             factors = {}

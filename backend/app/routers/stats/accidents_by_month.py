@@ -22,7 +22,6 @@ async def accidents_by_month(request: Request):
 
     db: Session = SessionLocal()
 
-    # Wyciągamy filtry
     year_month_pairs = []
     if filters and "years" in filters:
         for year_str, seasons in filters["years"].items():

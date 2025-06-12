@@ -11,7 +11,7 @@ async def user_weather_chart(request: Request):
     body = await request.json()
     collision_types = body.get("collision_types", [])
 
-    print("📥 Request received:", collision_types)
+    print("Request received:", collision_types)
 
     db: Session = SessionLocal()
 
@@ -24,7 +24,7 @@ async def user_weather_chart(request: Request):
         .filter(Accident.collision_type.in_(collision_types)) \
         .all()
 
-    print(f"📊 Fetched {len(results)} rows.")
+    print(f"Fetched {len(results)} rows.")
 
     def classify_hour(hour: int) -> str:
         if 22 <= hour or hour < 6:
@@ -50,7 +50,7 @@ async def user_weather_chart(request: Request):
             row[ctype] = counts.get(ctype, 0)
         response_data.append(row)
 
-    print("✅ Final data:", response_data[:3], "...")
+    print("Final data:", response_data[:3], "...")
 
     return {
         "data": response_data,

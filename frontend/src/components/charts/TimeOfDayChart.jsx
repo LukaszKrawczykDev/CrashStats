@@ -1,4 +1,3 @@
-// src/features/charts/TimeOfDayChart.jsx
 import { useEffect, useState } from "react";
 import {
     BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer,
@@ -30,7 +29,7 @@ export default function TimeOfDayChart() {
                 setTypes(json.types);
             })
             .catch((err) => {
-                console.error("❌ Błąd ładowania danych wykresu:", err);
+                console.error("Błąd ładowania danych wykresu:", err);
             });
     }, [selectedTypes]);
 

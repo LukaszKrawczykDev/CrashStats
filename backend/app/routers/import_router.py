@@ -1,5 +1,3 @@
-# app/routers/import_router.py
-
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
 from sqlalchemy.orm import Session
 import xml.etree.ElementTree as ET
@@ -31,7 +29,10 @@ async def import_data(
     text = (await file.read()).decode("utf-8")
     ext = file.filename.rsplit(".", 1)[-1].lower()
 
-    # 1) Wczytanie rekordów
+    db.connection(
+        execution_options={"isolation_level": "SERIALIZABLE"}
+    )
+
     try:
         if ext == "json":
             records = json.loads(text)
@@ -50,103 +51,106 @@ async def import_data(
 
     results = []
 
-    for idx, rec in enumerate(records, start=1):
-        row_res = {"row": idx}
+    try:
 
-        # faza 1: parsowanie + zapis Date/Location/Accident
-        try:
-            year  = int(rec["Year"])
-            month = int(rec["Month"])
-            day   = int(rec["Day"])
-            hour  = int(rec["Hour"])
-            is_weekend = rec.get("Weekend", "").strip().lower() == "weekend"
-            ctype = rec["Collision_Type"]
-            intype = rec["Injury_Type"]
-            factor = rec["Primary_Factor"]
-            place = rec["Reported_Location"]
-            lat   = float(rec["Latitude"])
-            lon   = float(rec["Longitude"])
 
-            # Date
-            date = (
-                    db.query(Date)
-                    .filter_by(year=year, month=month, day=day, hour=hour, is_weekend=is_weekend)
-                    .first()
-                    or Date(year=year, month=month, day=day, hour=hour, is_weekend=is_weekend)
-            )
-            db.add(date); db.commit(); db.refresh(date)
+        for idx, rec in enumerate(records, start=1):
+            row_res = {"row": idx}
 
-            # Location (rozdzielamy na street1/street2 po '&')
-            if "&" in place:
-                street1, street2 = [p.strip() for p in place.split("&", 1)]
-            else:
-                street1, street2 = place.strip(), None
+            try:
+                year = int(rec["Year"])
+                month = int(rec["Month"])
+                day = int(rec["Day"])
+                hour = int(rec["Hour"])
+                is_weekend = rec.get("Weekend", "").strip().lower() == "weekend"
+                ctype = rec["Collision_Type"]
+                intype = rec["Injury_Type"]
+                factor = rec["Primary_Factor"]
+                place = rec["Reported_Location"]
+                lat = float(rec["Latitude"])
+                lon = float(rec["Longitude"])
 
-            loc = (
-                    db.query(Location)
-                    .filter_by(street1=street1, street2=street2, latitude=lat, longitude=lon)
-                    .first()
-                    or Location(street1=street1, street2=street2, latitude=lat, longitude=lon)
-            )
-            db.add(loc); db.commit(); db.refresh(loc)
+                date = (
+                        db.query(Date)
+                        .filter_by(year=year, month=month, day=day, hour=hour, is_weekend=is_weekend)
+                        .first()
+                        or Date(year=year, month=month, day=day, hour=hour, is_weekend=is_weekend)
+                )
+                db.add(date); db.flush(); db.refresh(date)
 
-            # Accident
-            acc = Accident(
-                date_id=date.id,
-                location_id=loc.id,
-                collision_type=ctype,
-                injury_type=intype,
-                primary_factor=factor,
-            )
-            db.add(acc); db.commit(); db.refresh(acc)
+                if "&" in place:
+                    street1, street2 = [p.strip() for p in place.split("&", 1)]
+                else:
+                    street1, street2 = place.strip(), None
 
-        except Exception as e:
-            db.rollback()
-            row_res.update({"status": "error", "error": f"DB/parsing error: {e}"})
+                loc = (
+                        db.query(Location)
+                        .filter_by(street1=street1, street2=street2, latitude=lat, longitude=lon)
+                        .first()
+                        or Location(street1=street1, street2=street2, latitude=lat, longitude=lon)
+                )
+                db.add(loc); db.flush(); db.refresh(loc)
+
+                acc = Accident(
+                    date_id=date.id,
+                    location_id=loc.id,
+                    collision_type=ctype,
+                    injury_type=intype,
+                    primary_factor=factor,
+                )
+                db.add(acc); db.flush(); db.refresh(acc)
+
+                try:
+                    ts = datetime(year, month, day, hour, tzinfo=timezone.utc)
+                    block = fetch_weather_block(lat, lon, ts)
+                    hr = block["hourly"]
+                    ih = ts.hour
+
+                    temp = round(hr["temperature_2m"][ih], 2)
+                    rain1 = round(hr.get("precipitation", [0.0]*24)[ih], 2)
+                    snow1 = round(hr.get("snowfall", [0.0]*24)[ih], 2)
+                    cloud = round(hr.get("cloudcover", [0.0]*24)[ih], 2)
+                    wsp = round(hr.get("wind_speed_10m", [0.0]*24)[ih] / 3.6, 2)
+                    wdeg = int(hr.get("wind_direction_10m", [0.0]*24)[ih])
+                    rain24 = round(sum(hr.get("precipitation", [0.0]*24)), 2)
+                    snow24 = round(sum(hr.get("snowfall", [0.0]*24)), 2)
+
+                    w = Weather(
+                        date_id=date.id,
+                        location_id=loc.id,
+                        temperature=temp,
+                        rain_1h=rain1,
+                        snow_1h=snow1,
+                        rain_24h=rain24,
+                        snow_24h=snow24,
+                        wind_speed=wsp,
+                        wind_deg=wdeg,
+                        clouds=cloud,
+                        description=build_description(rain1, snow1, cloud),
+                        category=build_category(rain1, snow1, cloud),
+                        road_condition=road_condition(temp, rain24, snow24),
+                    )
+                    db.add(w); db.flush()
+
+                    row_res.update({"status": "success"})
+                except Exception as e:
+                    row_res.update({
+                        "status": "warning",
+                        "error": f"Weather fetch failed: {e}"
+                    })
+
+            except Exception as e:
+                row_res.update({
+                    "status": "error",
+                    "error": f"DB/parsing error: {e}"
+                })
+
             results.append(row_res)
-            continue  # przejdź do następnego rekordu
 
-        # faza 2: pobranie i zapis pogody
-        try:
-            ts = datetime(year, month, day, hour, tzinfo=timezone.utc)
-            block = fetch_weather_block(lat, lon, ts)
-            hr = block["hourly"]
-            ih = ts.hour
+        db.commit()
 
-            temp   = round(hr["temperature_2m"][ih], 2)
-            rain1  = round(hr.get("precipitation", [0.0]*24)[ih], 2)
-            snow1  = round(hr.get("snowfall", [0.0]*24)[ih], 2)
-            cloud  = round(hr.get("cloudcover", [0.0]*24)[ih], 2)
-            wsp    = round(hr.get("wind_speed_10m", [0.0]*24)[ih] / 3.6, 2)
-            wdeg   = int(hr.get("wind_direction_10m", [0.0]*24)[ih])
-            rain24 = round(sum(hr.get("precipitation", [0.0]*24)), 2)
-            snow24 = round(sum(hr.get("snowfall", [0.0]*24)), 2)
-
-            w = Weather(
-                date_id=date.id,
-                location_id=loc.id,
-                temperature=temp,
-                rain_1h=rain1,
-                snow_1h=snow1,
-                rain_24h=rain24,
-                snow_24h=snow24,
-                wind_speed=wsp,
-                wind_deg=wdeg,
-                clouds=cloud,
-                description=build_description(rain1, snow1, cloud),
-                category=build_category(rain1, snow1, cloud),
-                road_condition=road_condition(temp, rain24, snow24),
-            )
-            db.add(w); db.commit()
-            row_res.update({"status": "success"})
-        except Exception as e:
-            db.rollback()
-            # pogodę pomijamy, ale sam rekord i tak zaliczamy jako sukces
-            row_res.update({
-                "status": "warning",
-                "error": f"Weather fetch failed: {e}"
-            })
-
-        results.append(row_res)
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Import failed: {e}")
 
     return results

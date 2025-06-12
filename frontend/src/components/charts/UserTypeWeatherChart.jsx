@@ -29,7 +29,7 @@ export default function UserTypeWeatherChart() {
                 setTypes(json.types);
             })
             .catch((err) => {
-                console.error("❌ Błąd ładowania danych wykresu:", err);
+                console.error("Błąd ładowania danych wykresu:", err);
             });
     }, [selectedTypes]);
 

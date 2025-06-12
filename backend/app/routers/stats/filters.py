@@ -1,4 +1,3 @@
-# backend/app/routers/stats/filters.py
 from fastapi import APIRouter
 from sqlalchemy.orm import Session
 from app.database import SessionLocal

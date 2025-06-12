@@ -11,7 +11,7 @@ def run():
 
         existing = db.query(User).filter(User.email == email).first()
         if existing:
-            print("👤 Admin już istnieje – pomijam")
+            print("Admin już istnieje – pomijam")
             return
 
         user = User(
@@ -22,7 +22,7 @@ def run():
         )
         db.add(user)
         db.commit()
-        print(f"✅ Admin utworzony: {email}")
+        print(f"Admin utworzony: {email}")
     finally:
         db.close()
 

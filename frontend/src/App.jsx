@@ -1,9 +1,8 @@
-// App.jsx
 import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Header from "./components/Header";
 import FilterBar from "./components/FilterBar";
-import ChartGrid from "./components/charts/ChartGrid";
+import ChartGrid from "./components/charts/ChartGrid.jsx";
 import ExportPage from "./pages/ExportPage.jsx";
 import ImportPage from "./pages/ImportPage.jsx";
 import SoapStats from "./pages/SoapStats";

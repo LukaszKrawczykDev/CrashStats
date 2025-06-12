@@ -1,8 +1,7 @@
-// src/pages/ExportPage.jsx
 import { useEffect, useState } from 'react';
 import { Checkbox } from '../components/ui/checkbox';
 
-const API = import.meta.env.VITE_API_URL; // "/api"
+const API = import.meta.env.VITE_API_URL;
 
 export default function ExportPage() {
     const [years, setYears] = useState([]);
@@ -41,10 +40,8 @@ export default function ExportPage() {
         const qs = new URLSearchParams();
         selected.forEach(y => qs.append('years', y));
         qs.set('format', format);
-        // **bez preview**, żeby dostać pełny plik z nagłówkiem attachment
         const url = `${API}/export/data?${qs.toString()}`;
 
-        // prosta zmiana location – przeglądarka rozpozna Content-Disposition
         window.location.href = url;
     };
 

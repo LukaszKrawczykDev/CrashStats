@@ -1,4 +1,3 @@
-# backend/app/routers/stats/deaths_trend.py
 from fastapi import APIRouter, Request
 from sqlalchemy.orm import Session
 from app.database import SessionLocal

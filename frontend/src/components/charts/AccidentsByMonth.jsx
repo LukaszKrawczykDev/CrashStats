@@ -1,4 +1,3 @@
-// src/components/charts/AccidentsByMonth.jsx
 import { useEffect, useState } from "react";
 import {
     BarChart,
@@ -88,7 +87,6 @@ export default function AccidentsByMonth({ filters, expanded = false }) {
 
             {expanded && (
                 <div className="mt-4 flex flex-col md:flex-row gap-6">
-                    {/* FILTRY */}
                     <div>
                         <h4 className="font-semibold mb-2">Filtruj wg pogody</h4>
                         {ROAD_CONDITIONS.map((cond) => (
@@ -103,8 +101,6 @@ export default function AccidentsByMonth({ filters, expanded = false }) {
                             </label>
                         ))}
                     </div>
-
-                    {/* STATYSTYKI */}
                     <div>
                         <h4 className="font-semibold mb-2">Statystyki</h4>
                         <ul className="text-sm space-y-1">

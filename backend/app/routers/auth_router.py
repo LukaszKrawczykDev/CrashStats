@@ -1,5 +1,3 @@
-# backend/app/routers/auth_router.py
-
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -10,12 +8,10 @@ from app.auth import hash_pw, verify_pw, create_access_token, get_current_user
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
-# ---------- Rejestracja ----------
 @router.post("/register", status_code=201)
 def register(payload: RegisterSchema):
     db: Session = SessionLocal()
 
-    # sprawdzamy czy email lub username już istnieją
     exists = db.query(User).filter(
         (User.username == payload.username) | (User.email == payload.email)
     ).first()
@@ -34,9 +30,6 @@ def register(payload: RegisterSchema):
     db.refresh(user)
     db.close()
     return {"msg": "zarejestrowano"}
-
-# ---------- Logowanie ----------
-# backend/app/routers/auth_router.py
 
 @router.post("/login")
 def login(data: OAuth2PasswordRequestForm = Depends()):
@@ -58,7 +51,6 @@ def login(data: OAuth2PasswordRequestForm = Depends()):
         "role": role
     }
 
-# ---------- Bieżący użytkownik ----------
 @router.get("/me", response_model=UserOut)
 def me(curr=Depends(get_current_user)):
     return curr

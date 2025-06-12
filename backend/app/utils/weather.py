@@ -1,5 +1,3 @@
-# app/utils/weather.py
-
 import time
 import random
 import requests
@@ -11,10 +9,6 @@ DEFAULT_LAT = 39.16144
 DEFAULT_LON = -86.534848
 
 def fetch_weather_block(lat: float, lon: float, ts_utc: datetime, tries: int = MAX_TRIES) -> dict:
-    """
-    Pobiera z Open-Meteo dane godzinowe dla konkretnej daty.
-    Zwraca słownik z kluczem 'hourly'.
-    """
     date_str = ts_utc.strftime("%Y-%m-%d")
     url = (
         f"{OP_URL}?latitude={lat}&longitude={lon}"

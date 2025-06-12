@@ -1,4 +1,3 @@
-// src/components/charts/ChartGrid.jsx
 import React, { useState } from "react";
 import ChartCard from "../ChartCard";
 import ChartModal from "./ChartModal";
@@ -20,7 +19,6 @@ const chartComponents = [
 
 ];
 
-// 💡 PRZYJMIJ filters jako props!
 export default function ChartGrid({ filters }) {
     const [modalChart, setModalChart] = useState(null);
 

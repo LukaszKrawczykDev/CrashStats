@@ -1,4 +1,3 @@
-// src/components/Header.jsx
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import AuthModal from "./AuthModal";

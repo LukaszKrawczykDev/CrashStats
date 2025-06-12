@@ -22,13 +22,11 @@ const injuryColors = {
 const INJURY_KEYS = Object.keys(injuryColors);
 
 export default function WeatherChart() {
-    /* ---------- state ---------- */
     const [dimension, setDimension] = useState("category"); // albo 'road_condition'
     const [injuryFilter, setInjuryFilter] = useState(new Set(INJURY_KEYS));
     const [data, setData] = useState([]);
     const [open, setOpen] = useState(false);
 
-    /* ---------- api ---------- */
     useEffect(() => {
         (async () => {
             try {
@@ -53,7 +51,6 @@ export default function WeatherChart() {
         })();
     }, [dimension, injuryFilter]);
 
-    /* ---------- helpers ---------- */
     const toggleInjury = (k) => {
         setInjuryFilter((prev) => {
             const copy = new Set(prev);
@@ -77,7 +74,6 @@ export default function WeatherChart() {
         [injuryFilter, open]
     );
 
-    /* ---------- click-drill-down do mapy ---------- */
     const handleBarClick = (e) => {
         // wysyłam globalne zdarzenie; w LocationMap możesz to podsłuchać
         window.dispatchEvent(
@@ -85,10 +81,8 @@ export default function WeatherChart() {
         );
     };
 
-    /* ---------- render ---------- */
     return (
         <>
-            {/* --- Kafelek (mini) --- */}
             <div
                 className="w-full h-64 cursor-pointer"
                 onClick={() => setOpen(true)}
@@ -109,13 +103,10 @@ export default function WeatherChart() {
                 </ResponsiveContainer>
             </div>
 
-            {/* --- Modal z filtrami --- */}
             <ChartModal
                 isOpen={open}
                 onClose={() => setOpen(false)}
-                title="Wypadki a pogoda"
             >
-                {/* przełącznik wymiaru */}
                 <div className="flex items-center gap-4 mb-4">
                     <label className="flex items-center gap-1">
                         <input
@@ -138,8 +129,6 @@ export default function WeatherChart() {
                         <span>Stan nawierzchni (weather.road_condition)</span>
                     </label>
                 </div>
-
-                {/* checkboxy injury_type */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-x-6 gap-y-2 mb-6">
                     {INJURY_KEYS.map((k) => (
                         <label key={k} className="flex items-center gap-2">
@@ -151,8 +140,6 @@ export default function WeatherChart() {
                         </label>
                     ))}
                 </div>
-
-                {/* duży wykres */}
                 <div className="w-full h-[28rem]">
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={data} onClick={handleBarClick}>
